@@ -1,0 +1,10 @@
+# My config file
+
+# Window settings
+close_on_lose_focus=True
+x_position=40
+y_position=100
+
+# Colours
+background_color=blue
+foreground_color=yellow
