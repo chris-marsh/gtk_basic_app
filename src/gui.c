@@ -30,7 +30,7 @@ static void on_key_press(GtkWidget *window, GdkEventKey *eventkey)
 }
 
 
-WindowPtr create_window(const char *title, char *config_filename)
+WindowPtr create_window(const char *title, const char *config_filename)
 {
     WindowPtr window = malloc(sizeof *window);
 
@@ -70,3 +70,4 @@ void destroy_window(WindowPtr window)
     }
     free(window);
 }
+

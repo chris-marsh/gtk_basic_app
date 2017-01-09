@@ -19,6 +19,6 @@ typedef struct Config {
 int push_option(Config **head, char *key, char *value);
 Option pop_option(Config **head);
 void free_option(Option option);
-Config *read_config_file(char *filename);
+Config *read_config_file(const char *filename);
 
 #endif

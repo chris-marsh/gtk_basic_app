@@ -1,14 +1,27 @@
-CC=gcc
-CFLAGS=-std=c99 -g -Wall 
-GTKFLAGS=`pkg-config --cflags --libs gtk+-3.0`
-GTKLIBS=`pkg-config --cflags --libs gtk+-3.0`
- 
-SOURCE = src/main.c src/gui.c src/config.c src/common.c
+CC = gcc
+
+CFLAGS = -std=c99 -Wall -Wextra -g
+GTK_CFLAGS = `pkg-config --cflags gtk+-3.0`
+GTK_LIB = `pkg-config --libs gtk+-3.0`
+
+SRC_DIR = src
+BLD_DIR = build
+INC_DIR = include
+
+SRC = $(shell find $(SRC_DIR) -type f -name *.c)
+OBJ = $(patsubst $(SRC_DIR)/%,$(BLD_DIR)/%,$(SRC:.c=.o))
 EXEC = basic
 
-$(EXEC): $(SOURCE)
-	$(CC) $(SOURCE) -o $(EXEC) $(CFLAGS) $(GTKFLAGS) -I ./include
+$(EXEC): $(OBJ)
+	@echo "Linking..."
+	$(CC) $^ -o $(EXEC) $(GTK_LIB)
+
+$(BLD_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(BLD_DIR)
+	$(CC) $(CFLAGS) $(GTK_CFLAGS) -I $(INC_DIR) -c -o $@ $<
+
+clean:
+	@echo "Cleaning..."; 
+	$(RM) -r $(BLD_DIR) $(EXEC)
 
 .PHONY: clean
-clean:
-	rm -f basic

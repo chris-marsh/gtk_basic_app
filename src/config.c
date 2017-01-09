@@ -71,7 +71,7 @@ static int parse_line(const char *line, char **key, char **value)
 }
 
 
-Config *read_config_file(char *filename)
+Config *read_config_file(const char *filename)
 {
     FILE *fp;
     char line[256];
