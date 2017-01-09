@@ -3,9 +3,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "gui.h"
+#include "common.h"
 
 
 #define VERSION "1.0"
+#define APP_NAME "basic"
+#define CONFIG_NAME APP_NAME "rc"
 
 
 static void usage(int exit_code)
@@ -13,6 +16,7 @@ static void usage(int exit_code)
     puts("\nUSAGE");
     puts("    basic [options]\n");
     puts("OPTIONS");
+    puts("    -c, --config   - specify a config file path to load");
     puts("    -h, --help     - display this help");
     puts("    -v, --version  - output version information\n");
 
@@ -27,18 +31,22 @@ static void version(void)
 }
 
 
-static int get_command_line_options(
-        int argc, char *argv[])
+static char *process_arguments(int argc, char *argv[])
 {
     int optc = 0;
+    char *config_filename = NULL;
     static struct option const longopts[] = {
+        {"config",   no_argument, NULL, 'c'},
         {"help",     no_argument, NULL, 'h'},
         {"version",  no_argument, NULL, 'V'},
         {NULL, 0, NULL, 0}
     };
 
-    while ((optc = getopt_long(argc, argv, "x:y:smhv", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "c:hv", longopts, NULL)) != -1) {
         switch (optc) {
+            case 'c':
+                config_filename = strdup(optarg);
+                break;
             case 'h':
                 usage(0);
                 break;
@@ -57,16 +65,18 @@ static int get_command_line_options(
             usage(-1);
     }
 
-    return optc;
+    return config_filename;
 }
 
 
 int main(int argc, char *argv[])
 {
-    get_command_line_options(argc, argv);
     gtk_init(&argc, &argv);
-    WindowPtr window = create_window("The Title", "./basicrc");
+    char *config_filename = process_arguments(argc, argv);
+    WindowPtr window = create_window("The Title", config_filename);
     gtk_main();
     destroy_window(window);
+    if (config_filename)
+        free(config_filename);
     return 0;
 }

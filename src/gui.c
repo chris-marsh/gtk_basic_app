@@ -10,7 +10,6 @@ typedef struct Window *WindowPtr;
 
 struct Window {
     char *title;
-    char *config_filename;
     GtkWidget *win;
     Config *config;
 };
@@ -36,14 +35,16 @@ WindowPtr create_window(const char *title, const char *config_filename)
 
     if (window) {
         /* read config example */
-        window->config = read_config_file(config_filename);
-        Option option;
-        while (window->config!=NULL) {
-            option = pop_option(&(window->config));
-            printf("%s  =  %s\n", option.key, option.value);
-            free_option(option);
+        if (config_filename) {
+            window->config = read_config_file(config_filename);
+            Option option;
+            while (window->config!=NULL) {
+                option = pop_option(&(window->config));
+                printf("%s  =  %s\n", option.key, option.value);
+                free_option(option);
+            }
+            free(window->config);
         }
-        free(window->config);
 
         window->title = strdup(title);
 
