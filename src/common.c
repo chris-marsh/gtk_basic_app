@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "common.h"
@@ -6,7 +5,7 @@
 char *strdup (const char *source_str)
 {
     char *dest_str = malloc (strlen(source_str) + 1);   // Allocate memory
-    if (dest_str != NULL) strcpy (dest_str,source_str); // Copy string if okay
+    if (dest_str != NULL) strcpy(dest_str,source_str);  // Copy string if okay
     return dest_str;                                    // Return new memory
 }
 

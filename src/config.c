@@ -46,25 +46,24 @@ void free_option(Option option)
 
 static int parse_line(const char *line, char **key, char **value)
 {
-    char *first_str, *second_str;
-
+    char *value_str;
     /*  Skip empty lines and comments */
     if ((line[0] == '#') || (line[0] == '\n'))
         return FALSE;
-    if (!(first_str = strchr(line, '=')))
+    /* Get pointer to position of '=' if present */
+    if (!(value_str = strchr(line, '=')))
         return FALSE;
 
     /* Overwrite the leading '=' and inc pointer */
-    first_str[0] = '\0';
-    first_str++;
-
+    value_str[0] = '\0';
+    value_str++;
     *key = strdup(line);
 
     /* Overwrite '\n' with '\0' if '\n' present */
-    if ((second_str = strchr(first_str, '\n')))
-        second_str[0] = '\0';
-
-    *value = strdup(first_str);
+    char *temp_str;
+    if ((temp_str = strchr(value_str, '\n')))
+        temp_str[0] = '\0';
+    *value = strdup(value_str);
 
     trim_spaces(*key);
     trim_spaces(*value);
