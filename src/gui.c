@@ -1,3 +1,20 @@
+/******************************************************************************
+ *                                                                            *
+ *                   Copyright (C) 2016 Chris Marsh                           *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify it    *
+ * under the terms of the GNU General Public License as published by the      *
+ * Free Software Foundation, either version 3 of the License, or any later    *
+ * version.                                                                   *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful, but        *
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY *
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   *
+ * at <http://www.gnu.org/licenses/> for more details.                        *
+ *                                                                            *
+ ******************************************************************************/
+
+
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdlib.h>
@@ -35,8 +52,8 @@ WindowPtr create_window(const char *title, const char *config_filename)
 
     if (window) {
         /* read config example */
-        if (config_filename) {
-            window->config = read_config_file(config_filename);
+        window->config = read_config_file(config_filename);
+        if (window->config) {
             Option option;
             while (window->config!=NULL) {
                 option = pop_option(&(window->config));

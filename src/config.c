@@ -1,9 +1,30 @@
+/******************************************************************************
+ *                                                                            *
+ *                   Copyright (C) 2016 Chris Marsh                           *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify it    *
+ * under the terms of the GNU General Public License as published by the      *
+ * Free Software Foundation, either version 3 of the License, or any later    *
+ * version.                                                                   *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful, but        *
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY *
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   *
+ * at <http://www.gnu.org/licenses/> for more details.                        *
+ *                                                                            *
+ ******************************************************************************/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <limits.h>
 #include "config.h"
 #include "common.h"
 
+#define APP_NAME "basic"
+#define CONFIG_NAME APP_NAME "rc"
 
 int push_option(Config **head, char *key, char *value)
 {
@@ -71,16 +92,47 @@ static int parse_line(const char *line, char **key, char **value)
 }
 
 
+char *expand_config_filename(const char *filename) {
+    char *fn;
+
+    if (filename != NULL)
+        /* If user provided a filename then use it */
+        fn = strdup(filename);
+    else {
+        /* otherwise get the default config filename */
+        fn = strdup(CONFIG_NAME);
+    }
+    if (access(fn, R_OK) != -1 ) {
+        /* if the file exists in the current directory then use it */
+        return fn;
+    } else {
+        /* get the users config directory and use our folder
+           eg /home/user/.config/APP_NAME        
+           then look for the config file there */
+        char *dir = user_config_dir();
+        char *temp = malloc(strlen(dir)+strlen(APP_NAME)+5);
+		sprintf(temp, "%s%s%s%s%s", dir, "/", APP_NAME, "/", fn);
+		fn = strdup(temp);
+        free(dir);
+        free(temp);
+        return fn;
+    }
+    return NULL;
+}
+
+
 Config *read_config_file(const char *filename)
 {
     FILE *fp;
     char line[256];
-    char *key, *value;
+    char *fn, *key, *value;
     Config *config = NULL;
 
+    fn = expand_config_filename(filename);
+
     /* Return if cannot open the file */
-    if ((fp = fopen(filename, "r")) == NULL)
-        return FALSE;
+    if ((fp = fopen(fn, "r")) == NULL)
+        return NULL;
 
     /* Parse each line and store as key, value pair */
     while (fgets(line, sizeof(line), fp) != NULL) {
@@ -91,5 +143,6 @@ Config *read_config_file(const char *filename)
         }
     }
     fclose(fp);
+    free(fn);
     return config;
 }

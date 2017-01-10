@@ -1,7 +1,6 @@
 /******************************************************************************
  *                                                                            *
- *          Another (g)CALendar Copyright (C) 2016 Chris Marsh                *
- *               <https://github.com/chris-marsh/gcalendar                    *
+ *                   Copyright (C) 2016 Chris Marsh                           *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify it    *
  * under the terms of the GNU General Public License as published by the      *

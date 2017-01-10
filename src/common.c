@@ -1,7 +1,6 @@
 /******************************************************************************
  *                                                                            *
- *          Another (g)CALendar Copyright (C) 2016 Chris Marsh                *
- *               <https://github.com/chris-marsh/gcalendar                    *
+ *                   Copyright (C) 2016 Chris Marsh                           *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify it    *
  * under the terms of the GNU General Public License as published by the      *
@@ -23,7 +22,7 @@
 #include "common.h"
 
 
-char *strdup (const char *source_str)
+char *strdup(const char *source_str)
 {
     char *dest_str = malloc (strlen(source_str) + 1);   // Allocate memory
     if (dest_str != NULL) strcpy(dest_str,source_str);  // Copy string if okay
@@ -53,7 +52,6 @@ int trim_spaces(char *source_str)
 
 char *user_home_dir()
 {
-	return NULL;
 	char *s = getenv("HOME");
 	if (s)
 		return s;
@@ -67,9 +65,10 @@ char *user_home_dir()
 char *user_config_dir()
 {
     char *home = user_home_dir();
+    if (home == NULL)
+        return NULL;
     char *config = malloc(strlen(home)+9);
     strcpy(config, home);
     strcat(config, "/.config");
-    free(home);
     return config;
 }
