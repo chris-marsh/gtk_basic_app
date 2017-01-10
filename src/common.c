@@ -22,6 +22,9 @@
 #include "common.h"
 
 
+/*
+ * Implementation of string duplicate, ie allocate, copy & return
+*/
 char *strdup(const char *source_str)
 {
     char *dest_str = malloc (strlen(source_str) + 1);   // Allocate memory
@@ -30,6 +33,10 @@ char *strdup(const char *source_str)
 }
 
 
+/*
+ * Remove leading and trailing spaces (Ascii 32). As the result will be less
+ * than or equal in size of the input, its safe to edit the string inplace
+*/
 int trim_spaces(char *source_str)
 {
     char *dest_str = source_str;
@@ -50,6 +57,10 @@ int trim_spaces(char *source_str)
 }  
 
 
+/*
+ * Check the $HOME variable is valid and return it, otherwise use
+ * getpwuid to return data for the user (getuid)
+*/
 char *user_home_dir()
 {
 	char *s = getenv("HOME");
@@ -62,6 +73,10 @@ char *user_home_dir()
 }
 
 
+/*
+ * Append "/.config" to the the users home dir and return it.
+ * TODO: find a better way getting an actual XDG specified dir?
+*/
 char *user_config_dir()
 {
     char *home = user_home_dir();

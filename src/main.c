@@ -26,6 +26,9 @@
 #define VERSION "1.0"
 
 
+/*
+ * Output a help description to the console and exit.
+*/
 static void usage(int exit_code)
 {
     puts("\nUSAGE");
@@ -39,6 +42,9 @@ static void usage(int exit_code)
 }
 
 
+/*
+ * Output version information to the console and exit.
+*/
 static void version(void)
 {
     printf("Version %s (compiled %s)\n", VERSION, __DATE__);
@@ -46,6 +52,11 @@ static void version(void)
 }
 
 
+/*
+ * Process the commandline arguments passed to our app. This basic app
+ * runs a GUI and only expects very 'basic' arguments, help, version and config.
+ * more detailed options are provided by a config file.
+*/
 static char *process_arguments(int argc, char *argv[])
 {
     int optc = 0;
@@ -84,6 +95,9 @@ static char *process_arguments(int argc, char *argv[])
 }
 
 
+/*
+ * Create a main window and start the gtk event loop.
+*/
 int main(int argc, char *argv[])
 {
     gtk_init(&argc, &argv);

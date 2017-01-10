@@ -19,6 +19,10 @@
 #define CONFIG_H
 
 
+#define APP_NAME "basic"
+#define CONFIG_NAME APP_NAME "rc"
+
+
 /* Option pairs */
 typedef struct {
     char *key;
@@ -33,7 +37,7 @@ typedef struct Config {
 } Config;
 
 
-int push_option(Config **head, char *key, char *value);
+int push_option(Config **head, const char *key, const char *value);
 Option pop_option(Config **head);
 void free_option(Option option);
 Config *read_config_file(const char *filename);

@@ -19,14 +19,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <limits.h>
 #include "config.h"
 #include "common.h"
 
-#define APP_NAME "basic"
-#define CONFIG_NAME APP_NAME "rc"
-
-int push_option(Config **head, char *key, char *value)
+/*
+ * Allocate and add an option to the config stack
+*/
+int push_option(Config **head, const char *key, const char *value)
 {
     Config *stack = malloc(sizeof(*stack));
     if (stack) {
@@ -43,6 +42,9 @@ int push_option(Config **head, char *key, char *value)
 }
 
 
+/*
+ * Remove and return an option from the config stack 
+*/
 Option pop_option(Config **head)
 {
     Option option = {};
@@ -58,6 +60,9 @@ Option pop_option(Config **head)
 }
 
 
+/*
+ * Convenience function to cleanup an option node
+*/
 void free_option(Option option)
 {
     free(option.key);
@@ -65,6 +70,46 @@ void free_option(Option option)
 }
 
 
+/*
+ *  Given a filename, check if it exists in the order of ...
+ *          filename
+ *          /home/user/.config/APP_NAME/filename
+ *  If filename is not given or found, look for
+ *          CONFIG_NAME
+ *          /home/user/.config/APP_NAME/CONFIG_NAME
+*/
+char *expand_config_filename(const char *user_filename) {
+    char *filename;
+
+    if (user_filename != NULL)
+        /* If user provided a filename then use it */
+        filename = strdup(user_filename);
+    else {
+        /* otherwise use our default config filename */
+        filename = strdup(CONFIG_NAME);
+    }
+    if (access(filename, R_OK) == 0) {
+        /* if filename exists & is readable in the current directory then use it */
+        return filename;
+    } else {
+        /* otherwise, get the users config directory and use our folder */
+        char *filepath = user_config_dir();
+        char *qual_filename = malloc(strlen(filepath)+strlen(APP_NAME)+5);
+		sprintf(qual_filename, "%s%s%s%s%s", filepath, "/", APP_NAME, "/", filename);
+        free(filepath);
+        free(filename);
+        return qual_filename;
+    }
+    return NULL;
+}
+
+
+/*
+ * Config file format;
+ *      Comments start with a '#' on the first character of the line
+ *      Empty lines are ignored
+ *      A valid config line contains '=' seperating vale & key
+*/
 static int parse_line(const char *line, char **key, char **value)
 {
     char *value_str;
@@ -92,35 +137,10 @@ static int parse_line(const char *line, char **key, char **value)
 }
 
 
-char *expand_config_filename(const char *filename) {
-    char *fn;
-
-    if (filename != NULL)
-        /* If user provided a filename then use it */
-        fn = strdup(filename);
-    else {
-        /* otherwise get the default config filename */
-        fn = strdup(CONFIG_NAME);
-    }
-    if (access(fn, R_OK) != -1 ) {
-        /* if the file exists in the current directory then use it */
-        return fn;
-    } else {
-        /* get the users config directory and use our folder
-           eg /home/user/.config/APP_NAME        
-           then look for the config file there */
-        char *dir = user_config_dir();
-        char *temp = malloc(strlen(dir)+strlen(APP_NAME)+5);
-		sprintf(temp, "%s%s%s%s%s", dir, "/", APP_NAME, "/", fn);
-		fn = strdup(temp);
-        free(dir);
-        free(temp);
-        return fn;
-    }
-    return NULL;
-}
-
-
+/*
+ * Read the config file and populate a config stack with 
+ * option key/value pairs. Returns a pointer to the stack.
+*/
 Config *read_config_file(const char *filename)
 {
     FILE *fp;

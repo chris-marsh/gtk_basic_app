@@ -18,8 +18,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define SPACE 32
-
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -27,6 +25,8 @@
 #ifndef FALSE
 #define FALSE 0
 #endif
+
+#define SPACE 32
 
 char *strdup (const char *source_str);
 int trim_spaces(char *source_str);
