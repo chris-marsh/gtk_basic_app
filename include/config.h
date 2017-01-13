@@ -19,7 +19,7 @@
 #define CONFIG_H
 
 
-#define APP_NAME "basic"
+#define APP_NAME "example""
 #define CONFIG_NAME APP_NAME "rc"
 
 

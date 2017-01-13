@@ -20,9 +20,7 @@
 #include <stdlib.h>
 #include "common.h"
 #include "config.h"
-
-
-typedef struct Window *WindowPtr;
+#include "gui.h"
 
 
 struct Window {
@@ -32,6 +30,9 @@ struct Window {
 };
 
 
+/*
+ * Simple event handler to do stuff
+*/
 static void on_key_press(GtkWidget *window, GdkEventKey *eventkey)
 {
     switch (eventkey->keyval) {

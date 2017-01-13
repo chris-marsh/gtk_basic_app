@@ -10,7 +10,7 @@ INC_DIR = include
 
 SRC = $(shell find $(SRC_DIR) -type f -name *.c)
 OBJ = $(patsubst $(SRC_DIR)/%,$(BLD_DIR)/%,$(SRC:.c=.o))
-EXEC = basic
+EXEC = example
 
 $(EXEC): $(OBJ)
 	@echo "Linking..."

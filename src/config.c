@@ -95,7 +95,7 @@ char *expand_config_filename(const char *user_filename) {
         /* otherwise, get the users config directory and use our folder */
         char *filepath = user_config_dir();
         char *qual_filename = malloc(strlen(filepath)+strlen(APP_NAME)+5);
-		sprintf(qual_filename, "%s%s%s%s%s", filepath, "/", APP_NAME, "/", filename);
+        sprintf(qual_filename, "%s%c%s%c%s", filepath, '/', APP_NAME, '/', filename);
         free(filepath);
         free(filename);
         return qual_filename;
@@ -105,10 +105,15 @@ char *expand_config_filename(const char *user_filename) {
 
 
 /*
+ * Split the given line into a key and value pair
  * Config file format;
  *      Comments start with a '#' on the first character of the line
  *      Empty lines are ignored
  *      A valid config line contains '=' seperating vale & key
+ * (1) char *line: the string to be parsed
+ * (2) char **key: a pointer to a new string will be returned
+ * (2) char **value: a pointer to a new string will be returned
+ * Caller is responsible for freeing the memory of returned strings.
 */
 static int parse_line(const char *line, char **key, char **value)
 {
@@ -120,7 +125,7 @@ static int parse_line(const char *line, char **key, char **value)
     if (!(value_str = strchr(line, '=')))
         return FALSE;
 
-    /* Overwrite the leading '=' and inc pointer */
+    /* Overwrite leading '=' ('\0' marks end of key_str) and inc value pointer */
     value_str[0] = '\0';
     value_str++;
     *key = strdup(line);
@@ -133,6 +138,7 @@ static int parse_line(const char *line, char **key, char **value)
 
     trim_spaces(*key);
     trim_spaces(*value);
+
     return TRUE;
 }
 
